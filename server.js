@@ -4,7 +4,9 @@ const user = require('./routes/user.route');
 const mongoose = require('mongoose');
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
-let authCtrl = require('./controllers/auth.controller')
+let authCtrl = require('./controllers/auth.controller');
+let carCtrl = require('./controllers/car.controller');
+let authMiddleware = require('./middlewares/auth.middleware');
 const config = require('./config').get(process.env.NODE_ENV);
 const PORT = 3000;
 
@@ -47,6 +49,7 @@ app.post('/signup', authCtrl.signup);
 app.post('/signin', authCtrl.signin);
 app.post('/oauth/facebook', authCtrl.accountsFacebook);
 app.post('/oauth/google', authCtrl.accountsGoogle);
+app.post('/cars', authMiddleware.authenticate, carCtrl.add)
 
 server.listen(process.env.PORT || 3000);
 
