@@ -48,7 +48,7 @@ app.post('/signin', authCtrl.signin);
 app.post('/oauth/facebook', authCtrl.accountsFacebook);
 app.post('/oauth/google', authCtrl.accountsGoogle);
 
-server.listen(PORT);
+server.listen(process.env.PORT || 3000);
 
 io.on('connection', socket => {
   socket.on('new_service', data => {
