@@ -50,6 +50,7 @@ app.post('/signin', authCtrl.signin);
 app.post('/oauth/facebook', authCtrl.accountsFacebook);
 app.post('/oauth/google', authCtrl.accountsGoogle);
 app.post('/cars', authMiddleware.authenticate, carCtrl.add)
+app.get('/cars', authMiddleware.authenticate, carCtrl.list)
 
 server.listen(process.env.PORT || 3000);
 

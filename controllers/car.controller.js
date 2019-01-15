@@ -17,3 +17,15 @@ exports.add = (req, res) => {
         })
 
 }
+
+exports.list = (req, res) => {
+    let { _id: customer } = req.decoded._doc
+
+    Car.list({ customer })
+        .then(cars => {
+            return util.okResponse(res, 200, { cars })
+        })
+        .catch(err => {
+            return util.errorResponse(res, err.name, err.extra)
+        })
+}

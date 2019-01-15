@@ -8,3 +8,11 @@ exports.add = (attrs) => {
             .catch(err => reject(err))
     })
 }
+
+exports.list = (match) => {
+    return new Promise((resolve, reject) => {
+        Car.find(match)
+            .then(cars => resolve(cars))
+            .catch(err => reject(err))
+    })
+}
