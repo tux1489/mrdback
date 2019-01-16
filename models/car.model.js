@@ -26,3 +26,11 @@ exports.delete = (match) => {
             });
     })
 }
+
+exports.get = (match) => {
+    return new Promise((resolve, reject) => {
+        Car.findOne(match)
+            .then(cars => resolve(cars))
+            .catch(err => reject(err))
+    })
+}

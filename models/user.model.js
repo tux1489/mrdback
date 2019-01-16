@@ -121,3 +121,14 @@ exports.signup = (email, password, profile, ustype) => {
             });
     });
 }
+
+exports.update = (match, set) => {
+    return new Promise((resolve, reject) => {
+        User.findOneAndUpdate(match, set, { new: true })
+            .then(user => {
+
+                resolve(user)
+            })
+            .catch(err => reject(err))
+    })
+}

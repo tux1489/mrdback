@@ -53,15 +53,17 @@ exports.setFavorite = (req, res) => {
     if (!carID)
         return util.errorResponse(res, "MISSING_REQUIRED_FIELDS");
 
-    Car.get({ _id: carID })
+    Car.get({ _id: carID, customer: userID })
         .then(car => {
             if (!car)
                 throw { name: "NOT_FOUND" }
-            else
-                return User.update({ _id: userID }, { $set: { 'settings.favorite_car': carID } });
+
+            return User.update({ _id: userID }, { $set: { 'settings.favorite_car': car._id } })
         })
         .then(user => {
-            return util.okResponse(res, 200, { settings: user.settings });
+            return util.okResponse(res, 200, { user });
         })
-        .catch(err => { return util.errorResponse(res, err.name, err.extra) });
+        .catch(err => {
+            return util.errorResponse(res, err.name, err.extra)
+        });
 }
