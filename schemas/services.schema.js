@@ -19,9 +19,14 @@ let ServiceSchema = new Schema({
         },
         coordinates: [Number]
     },
+    type: {
+        type: String,
+        enum: ['Gold Detail', 'Zaphire Detail', 'Emerald Detail', 'Ruby Detail', 'Diamond Detail']
+    },
     status: {
         type: String,
-        enum: ['pending', 'completed', 'cancelled', 'discarded']
+        enum: ['pending', 'completed', 'cancelled', 'discarded'],
+        default: 'pending'
     }
 }, {
         timestamps: {

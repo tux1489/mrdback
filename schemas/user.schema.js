@@ -26,7 +26,7 @@ let UserSchema = new Schema({
   settings: {
     favorite_car: {
       type: Schema.Types.ObjectId,
-      ref: 'car'
+      ref: 'Car'
     },
     max_waiting_time: {
       type: String
@@ -37,7 +37,8 @@ let UserSchema = new Schema({
     phone: { type: String },
     age: { type: Number }
   },
-  cancelled_services: Number
+  cancelled_services: Number,
+  last_service_recived: Date
 },
   {
     timestamps: {

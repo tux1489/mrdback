@@ -16,3 +16,13 @@ exports.list = (match) => {
             .catch(err => reject(err))
     })
 }
+
+exports.delete = (match) => {
+    return new Promise((resolve, reject) => {
+        Car.remove(match)
+            .then(() => resolve())
+            .catch(err => {
+                reject(err);
+            });
+    })
+}

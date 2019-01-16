@@ -3,7 +3,7 @@ exports.TOKEN_EXPIRES_IN = '365d'
 
 exports.ERRORS = {
     "INTERNAL_ERROR": {
-        httpCode: 400,
+        httpCode: 500,
         code: "#-1"
     },
     "NOT_FOUND": {

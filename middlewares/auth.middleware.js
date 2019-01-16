@@ -5,8 +5,6 @@ let jwt = require('jsonwebtoken'),
     util = require('../utils/util');
 
 exports.authenticate = (req, res, next) => {
-    console.log(req.body);
-    console.log(req.headers['x-access-token']);
 
     let token = (req.body && req.body.access_token) || (req.query && req.query.access_token) || req.headers['x-access-token'];
     if (token) {
