@@ -86,8 +86,6 @@ exports.update = (req, res) => {
             return util.okResponse(res, 201, { cars })
         })
         .catch(err => {
-            console.log(err);
-
             return util.errorResponse(res, err.name, err.extra);
         })
 }

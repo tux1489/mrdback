@@ -75,7 +75,7 @@ exports.events = (io) => {
 
             let { _id: serviceID, socketID, token } = data;
 
-            authMid(token)
+            authMid.decodeToken(token)
                 .then(decoded => {
                     return Service.update({ _id: serviceID }, {
                         $set: { take_by: decoded._user._id, status: 'taken' }
