@@ -2,6 +2,7 @@ const express = require('express');
 const authCtrl = require('../controllers/auth.controller');
 const carCtrl = require('../controllers/car.controller');
 const generalCtrl = require('../controllers/general.controller');
+const userCtrl = require('../controllers/user.controller');
 const authMiddleware = require('../middlewares/auth.middleware')
 
 module.exports = (app) => {
@@ -30,6 +31,10 @@ module.exports = (app) => {
 
    /* CONSTANTS */
    apiRoutes.get('/constants', generalCtrl.constants);
+
+
+   /* TEST */
+   apiRoutes.get('/detailers', userCtrl.getNextDetailer);
 
    app.use('', apiRoutes);
 }

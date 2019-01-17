@@ -18,3 +18,16 @@ exports.add = (attrs) => {
             .catch(err => reject({ name: "INTERNAL_ERROR", extra: err }))
     });
 };
+
+exports.update = (match, set, newOp = true) => {
+    return new Promise((resolve, reject) => {
+        Service.findOneAndUpdate(match, set, { new: newOp })
+            .populate({ path: 'take_by', select: 'profile.name profile.phone' })
+            .exec((err, service) => {
+                if (err)
+                    reject(err);
+                else
+                    resolve(service)
+            })
+    });
+}

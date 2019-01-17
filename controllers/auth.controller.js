@@ -1,4 +1,5 @@
 const User = require('../models/user.model')
+const authMid = require('../middlewares/auth.middleware')
 const CTS = require('../utils/constants')
 let util = require('../utils/util')
 let https = require('https');
@@ -10,6 +11,8 @@ exports.signin = (req, res) => {
         email,
         password
     } = req.body;
+
+    console.log(req.body);
 
     if (!email || !password)
         //Some required field is missing
@@ -29,7 +32,7 @@ exports.signin = (req, res) => {
             let response = { user }
 
             // If user is not owner, add just the token to response object.
-            response.token = util.generateToken({ _doc }, CTS.TOKEN_EXPIRES_IN);
+            response.token = authMid.generateToken({ _doc }, CTS.TOKEN_EXPIRES_IN);
             return util.okResponse(res, 201, response);
         })
         .catch(err => {
@@ -66,7 +69,7 @@ exports.signup = (req, res) => {
                     ustype
                 }
 
-                response.token = util.generateToken({ _doc }, CTS.TOKEN_EXPIRES_IN);
+                response.token = authMid.generateToken({ _doc }, CTS.TOKEN_EXPIRES_IN);
                 return util.okResponse(res, 201, response)
             }
 
@@ -115,7 +118,7 @@ exports.accountsFacebook = (req, res) => {
                         _id: user._id,
                         ustype: user.ustype
                     }
-                    return util.okResponse(res, 200, { user, token: util.generateToken({ _doc }, CTS.TOKEN_EXPIRES_IN) })
+                    return util.okResponse(res, 200, { user, token: authMid.generateToken({ _doc }, CTS.TOKEN_EXPIRES_IN) })
                 })
                 .catch(err => {
                     return util.errorResponse(res, err.name, err.extra)
@@ -127,6 +130,8 @@ exports.accountsFacebook = (req, res) => {
 
 exports.accountsGoogle = (req, res) => {
     let token = req.body.token;
+    console.log(req.body);
+
 
     if (!token)
         return util.errorResponse(res, 'MISSING_REQUIRED_FIELDS');
@@ -164,7 +169,7 @@ exports.accountsGoogle = (req, res) => {
                         _id: user._id,
                         ustype: user.ustype
                     }
-                    return util.okResponse(res, 200, { user, token: util.generateToken({ _doc }, CTS.TOKEN_EXPIRES_IN) })
+                    return util.okResponse(res, 200, { user, token: authMid.generateToken({ _doc }, CTS.TOKEN_EXPIRES_IN) })
                 })
                 .catch(err => {
                     return util.errorResponse(res, err.name, err.extra)

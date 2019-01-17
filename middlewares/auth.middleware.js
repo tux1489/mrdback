@@ -4,28 +4,49 @@ let jwt = require('jsonwebtoken'),
     User = require('../models/user.model'),
     util = require('../utils/util');
 
-exports.authenticate = (req, res, next) => {
 
-    let token = (req.body && req.body.access_token) || (req.query && req.query.access_token) || req.headers['x-access-token'];
-    if (token) {
-        jwt.verify(token, SECRET, function (err, decoded) {
-            if (err || !decoded) {
-                return util.errorResponse(res, 'AUTHENTICATE_FAILED', err);
-            } else {
+
+exports.generateToken = generateToken = (doc, expiresIn) => {
+    return jwt.sign(doc, SECRET, {
+        expiresIn: expiresIn
+    });
+}
+
+exports.decodeToken = decodeToken = (token) => {
+    return new Promise((resolve, reject) => {
+        if (!token)
+            return reject({ name: "NO_TOKEN_PROVIDED" });
+
+        jwt.verify(token, SECRET, (err, decoded) => {
+
+            if (err || !decoded || !decoded._doc._id)
+                return reject({ name: "Token err" });
+            else {
                 User.get({ _id: decoded._doc._id })
                     .then(user => {
-                        if (user) {
-                            req.decoded = decoded;
-                            next();
-                        }
-                        else
-                            return util.errorResponse(res, "AUTHENTICATE_FAILED");
+                        decoded._user = user;
+                        resolve(decoded);
                     })
-                    .catch(err => {
-                        return util.errorResponse(res, "AUTHENTICATE_FAILED", err);
-                    });
+                    .catch(err => reject(err));
             }
-        });
+        })
+    })
+}
+
+exports.authenticate = (req, res, next) => {
+    // console.log(req.body);
+
+    let token = (req.body && req.body.access_token) || (req.query && req.query.access_token) || req.headers['x-access-token'];
+
+    if (token) {
+        decodeToken(token)
+            .then(decoded => {
+                req.decoded = decoded;
+                next();
+            })
+            .catch(err => {
+                return util.errorResponse(res, "AUTHENTICATE_FAILED");
+            });
     } else {
         return util.errorResponse(res, 'NO_TOKEN_PROVIDED');
     }

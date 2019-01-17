@@ -25,7 +25,7 @@ let ServiceSchema = new Schema({
     },
     status: {
         type: String,
-        enum: ['pending', 'completed', 'cancelled', 'discarded'],
+        enum: ['pending', 'taken', 'completed', 'cancelled', 'discarded'],
         default: 'pending'
     }
 }, {
