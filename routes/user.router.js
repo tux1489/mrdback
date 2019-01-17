@@ -24,6 +24,7 @@ module.exports = (app) => {
    apiRoutes.post('/cars', authMiddleware.authenticate, carCtrl.add);
    apiRoutes.delete('/cars', authMiddleware.authenticate, carCtrl.remove);
    apiRoutes.get('/cars', authMiddleware.authenticate, carCtrl.list);
+   apiRoutes.put('/cars', authMiddleware.authenticate, carCtrl.update);
 
    /* SETTINGS */
    apiRoutes.patch('/cars/favorite', authMiddleware.authenticate, carCtrl.setFavorite);

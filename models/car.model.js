@@ -34,3 +34,12 @@ exports.get = (match) => {
             .catch(err => reject(err))
     })
 }
+
+exports.update = (match, set) => {
+    return new Promise((resolve, reject) => {
+        Car.update(match, set)
+            .then(result => resolve(result))
+            .catch(err => reject(err))
+    })
+
+}

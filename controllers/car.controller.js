@@ -67,3 +67,27 @@ exports.setFavorite = (req, res) => {
             return util.errorResponse(res, err.name, err.extra)
         });
 }
+
+exports.update = (req, res) => {
+    let { model, serial, color, id: _id } = req.body;
+    let { _id: customer } = req.decoded._doc;
+
+    if (!model || !serial || !color)
+        return util.errorResponse(res, "MISSING_REQUIRED_FIELDS");
+
+    Car.update({ _id, customer }, { $set: { model, serial, color } })
+        .then(result => {
+            if (result.n == 0)
+                return util.errorResponse(res, "NOT_FOUND");
+            else
+                return Car.list({ customer });
+        })
+        .then(cars => {
+            return util.okResponse(res, 201, { cars })
+        })
+        .catch(err => {
+            console.log(err);
+
+            return util.errorResponse(res, err.name, err.extra);
+        })
+}
