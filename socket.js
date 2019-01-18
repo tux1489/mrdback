@@ -101,6 +101,14 @@ exports.events = (io) => {
                     return User.getNextDetailer();
                 })
                 .then(detailer => {
+                    return User.update({ _id: detailer._id }, {
+                        $set: { last_service_recived: Date.now() }
+                    })
+                })
+                .then(detailer => {
+                    console.log('detailer id: ', detailer._id);
+                    console.log(response);
+
                     io.to(detailer._id).emit('new_detail', { service, serviceID: 0, socketID: service.customer });
                 })
                 .catch(err => {
