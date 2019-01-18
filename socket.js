@@ -102,6 +102,7 @@ exports.events = (io) => {
                 })
                 .then(detailer => {
                     io.to(detailer._id).emit('new_detail', { service, serviceID: 0, socketID: service.customer });
+                    io.to(service.customer).emit('new_detail', { service, serviceID: 0 });
                 })
                 .catch(err => {
                     socket.emit('leave_it', { error: err });
