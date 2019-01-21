@@ -39,7 +39,7 @@ exports.signin = (login, password, imei = "") => {
             match.username = login.replace(/\s/g, '').toLowerCase();
 
         //Find the user in Database
-        User.findOneAndUpdate(match, { $set: { imei } })
+        User.findOneAndUpdate(match, { $set: { imei, 'settings.available': true } }, { new: true })
             .then(result => {
                 user = result;
 

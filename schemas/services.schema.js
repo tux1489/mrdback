@@ -27,9 +27,13 @@ let ServiceSchema = new Schema({
         type: String,
         enum: ['Gold Detail', 'Zaphire Detail', 'Emerald Detail', 'Ruby Detail', 'Diamond Detail']
     },
+    appointment: {
+        type: Boolean,
+        default: false
+    },
     status: {
         type: String,
-        enum: ['pending', 'taken', 'completed', 'cancelled', 'discarded'],
+        enum: ['pending', 'appointed', 'taken', 'completed', 'cancelled', 'discarded'],
         default: 'pending'
     }
 }, {

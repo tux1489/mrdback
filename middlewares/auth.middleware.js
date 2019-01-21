@@ -34,17 +34,22 @@ exports.decodeToken = decodeToken = (token) => {
 }
 
 exports.authenticate = (req, res, next) => {
-    // console.log(req.body);
+    console.log(req.body);
+    console.log('headers', req.headers);
 
     let token = (req.body && req.body.access_token) || (req.query && req.query.access_token) || req.headers['x-access-token'];
 
     if (token) {
         decodeToken(token)
             .then(decoded => {
+                console.log(' decodificado');
+
                 req.decoded = decoded;
                 next();
             })
             .catch(err => {
+                console.log(err);
+
                 return util.errorResponse(res, "AUTHENTICATE_FAILED");
             });
     } else {

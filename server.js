@@ -6,6 +6,7 @@ const router = require('./routes/user.router');
 const PORT = 3000;
 const http = require('http');
 const socket = require('./socket');
+const serviceProcedure = require('./procedures/services.procedures');
 var server = require('http').Server(app);
 
 
@@ -52,7 +53,7 @@ let io = require('socket.io')(http, {
 
 socket.events(io);
 
-
+serviceProcedure.init();
 /* NOTES:
 
 - EL cliente debe confirmar cuando el detailer llegó.

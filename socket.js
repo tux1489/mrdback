@@ -1,12 +1,14 @@
-const jwt = require('jsonwebtoken');
 const User = require('./models/user.model');
 const Service = require('./models/service.model');
-const config = require('./config').get(process.env.NODE_ENV);
-const SECRET = config.secret;
 const authMid = require('./middlewares/auth.middleware');
 const CTS = require('./utils/constants');
 
-exports.events = (io) => {
+let io;
+
+exports.events = (_io) => {
+
+    io = _io;
+
     io.on('connection', socket => {
         socket.on('join', data => {
             let token = data.token;
@@ -26,7 +28,7 @@ exports.events = (io) => {
         });
         socket.on('new_service', data => {
 
-            let { token, destination, serviceId, carID = null } = data;
+            let { token, destination, serviceId, carID = null, appointment = false, date } = data;
             let response = {}
 
             if (!token || !destination || !serviceId || carID)
@@ -38,12 +40,15 @@ exports.events = (io) => {
                     let newServiceAttrs = {
                         customer: decoded._user._id,
                         car: carID,
-                        date: Date.now(),
+                        appointment,
                         loc: {
                             coordinates: [destination.latitude, destination.longitude]
                         },
                         type: CTS.SERVICES_TYPES[serviceId].title
                     }
+
+                    newServiceAttrs.date = appointment ? date : Date.now();
+                    newServiceAttrs.status = appointment ? 'appointed' : 'pending';
 
                     return Service.add(newServiceAttrs);
                 })
@@ -75,7 +80,6 @@ exports.events = (io) => {
         socket.on('take_it', data => {
 
             let { _id: serviceID, token } = data;
-            //        let response = {};
 
             authMid.decodeToken(token)
                 .then(decoded => {
@@ -87,8 +91,6 @@ exports.events = (io) => {
                     })
                 })
                 .then(service => {
-                    //   response.service = service;
-                    //return User.update({ _id })
                     io.to(service.customer).emit('taken', { service });
                     socket.emit('take_it', { service, success: true })
                 })
@@ -100,16 +102,15 @@ exports.events = (io) => {
             let { token, service } = data;
             authMid.decodeToken(token)
                 .then(decoded => {
-                    detailerId = decoded._user._id;
+                    //  detailerId = decoded._user._id;
                     return User.getNextDetailer();
                 })
                 .then(detailer => {
                     return User.update({ _id: detailer._id }, {
-                        $set: { last_service_recived: Date.now() }
+                        $set: { last_service_recived: Date.now(), 'settings.available': true }
                     })
                 })
                 .then(detailer => {
-                    // console.log('leave it detailer id: ', detailer._id);
                     console.log('leave it', detailer.profile.name);
 
                     io.to(detailer._id).emit('new_detail', { service, serviceID: 0, socketID: service.customer });
@@ -122,7 +123,6 @@ exports.events = (io) => {
             let { token, service } = data;
             console.log('El cliente canceló el servicio: ', service);
 
-            //   /  let now = Date.now();
             let timePassed = (Date.now() - (new Date(service.date))) / 60000;
             console.log(timePassed);
 
@@ -174,6 +174,26 @@ exports.events = (io) => {
 
         });
     });
+}
+
+exports.NotifyNextDetailer = NotifyNextDetailer = (service) => {
+    User.getNextDetailer()
+        .then(detailer => {
+            return User.update({ _id: detailer._id }, {
+                $set: {
+                    last_service_recived: Date.now(),
+                    'settings.available': false
+                }
+            });
+        })
+        .then(detailer => {
+            io.to(detailer._id).emit('new_detail', { service, serviceID: 0, socketID: 'aa' });
+            io.to(service.customer).emit('new_service', { service, serviceID: 0, socketID: 'aa' });
+        })
+        .catch(err => {
+            console.log(' error: ', err);
+            io.to(service.customer).emit('new_service', { error: err });
+        })
 }
 
 

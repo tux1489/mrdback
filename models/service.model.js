@@ -34,3 +34,12 @@ exports.update = (match, set, newOp = true) => {
             })
     });
 }
+
+exports.list = (match) => {
+    return new Promise((resolve, reject) => {
+        Service.find(match)
+            .sort({ 'date': 1 })
+            .then(services => resolve(services))
+            .catch(err => reject(err))
+    })
+}
