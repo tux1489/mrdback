@@ -53,7 +53,7 @@ let io = require('socket.io')(http, {
 
 socket.events(io);
 
-serviceProcedure.init();
+//serviceProcedure.init();
 /* NOTES:
 
 - EL cliente debe confirmar cuando el detailer llegó.
