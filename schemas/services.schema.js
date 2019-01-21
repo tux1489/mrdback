@@ -11,6 +11,10 @@ let ServiceSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'User'
     },
+    car: {
+        type: Schema.Types.ObjectId,
+        ref: 'Car'
+    },
     date: Date,
     loc: {
         type: {

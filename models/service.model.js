@@ -27,7 +27,10 @@ exports.update = (match, set, newOp = true) => {
                 if (err)
                     reject(err);
                 else
-                    resolve(service)
+                    if (!service)
+                        reject({ name: "NOT_FOUND" })
+                    else
+                        resolve(service)
             })
     });
 }

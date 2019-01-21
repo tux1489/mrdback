@@ -31,6 +31,10 @@ let UserSchema = new Schema({
     },
     max_waiting_time: {
       type: String
+    },
+    available: {
+      type: Boolean,
+      default: true
     }
   },
   profile: {

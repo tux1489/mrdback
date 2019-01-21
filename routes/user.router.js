@@ -28,6 +28,7 @@ module.exports = (app) => {
 
    /* SETTINGS */
    apiRoutes.patch('/cars/favorite', authMiddleware.authenticate, carCtrl.setFavorite);
+   apiRoutes.patch('/users/availability', authMiddleware.authenticate, userCtrl.updateAvailability);
 
 
    /* CONSTANTS */

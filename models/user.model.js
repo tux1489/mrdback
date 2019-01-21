@@ -126,15 +126,18 @@ exports.update = (match, set) => {
     return new Promise((resolve, reject) => {
         User.findOneAndUpdate(match, set, { new: true })
             .then(user => {
-                resolve(user)
+                if (!user)
+                    return reject({ name: "USER_NOT_FOUND" });
+                else
+                    resolve(user);
             })
-            .catch(err => reject(err))
+            .catch(err => reject(err));
     })
 }
 
 exports.getNextDetailer = () => {
     return new Promise((resolve, reject) => {
-        User.find({ ustype: 'detailer' })
+        User.find({ ustype: 'detailer', 'settings.available': true })
             .sort({ last_service_recived: 1 })
             .then(detailers => {
                 console.log('detailers', detailers[0]);
@@ -142,7 +145,7 @@ exports.getNextDetailer = () => {
                 if (detailers[0])
                     resolve(detailers[0])
                 else
-                    reject({ name: "No hay detailers disponibles" }) //TODO: cambiar
+                    reject({ name: "NO_DETAILERS_AVAILABLE" });
             })
             .catch(err => reject(err))
 
